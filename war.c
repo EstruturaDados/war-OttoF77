@@ -16,15 +16,34 @@
 
 // Inclusão das bibliotecas padrão necessárias para entrada/saída, alocação de memória, manipulação de strings e tempo.
 
+#include <stdio.h>
+#include <string.h>
+#include <strings.h>
+
 // --- Constantes Globais ---
 // Definem valores fixos para o número de territórios, missões e tamanho máximo de strings, facilitando a manutenção.
+
+#define QTDE_TERRITORIOS 5
 
 // --- Estrutura de Dados ---
 // Define a estrutura para um território, contendo seu nome, a cor do exército que o domina e o número de tropas.
 
+typedef struct{
+	char nome[30];
+	char cor[10];
+	int tropas;
+}Territorio;
+
+//cria vetor para armazenar 5 territórios
+
+Territorio territorios[QTDE_TERRITORIOS];
+
 // --- Protótipos das Funções ---
 // Declarações antecipadas de todas as funções que serão usadas no programa, organizadas por categoria.
 // Funções de setup e gerenciamento de memória:
+
+void limparBuffer();
+
 // Funções de interface com o usuário:
 // Funções de lógica principal do jogo:
 // Função utilitária:
@@ -39,6 +58,9 @@ int main() {
     // - Preenche os territórios com seus dados iniciais (tropas, donos, etc.).
     // - Define a cor do jogador e sorteia sua missão secreta.
 
+    //limpa buffer de entrada para evitar problemas com scanf e getchar
+    limparBuffer();
+
     // 2. Laço Principal do Jogo (Game Loop):
     // - Roda em um loop 'do-while' que continua até o jogador sair (opção 0) ou vencer.
     // - A cada iteração, exibe o mapa, a missão e o menu de ações.
@@ -47,6 +69,29 @@ int main() {
     //   - Opção 2: Verifica se a condição de vitória foi alcançada e informa o jogador.
     //   - Opção 0: Encerra o jogo.
     // - Pausa a execução para que o jogador possa ler os resultados antes da próxima rodada.
+
+    for(int i=0; i<QTDE_TERRITORIOS; i++){
+        printf("Digite o nome do território %d: ", i+1);
+        fgets(territorios[i].nome, 30, stdin);
+        //remove o caractere de nova linha do final da string
+        territorios[i].nome[strcspn(territorios[i].nome, "\n")] = '\0';
+
+        printf("Digite a cor do território %s: ", territorios[i].nome);
+        fgets(territorios[i].cor, 10, stdin);
+        //remove o caractere de nova linha do final da string
+        territorios[i].cor[strcspn(territorios[i].cor, "\n")] = '\0';
+
+        printf("Digite o número de tropas no território %s: ", territorios[i].nome);
+        scanf("%d", &territorios[i].tropas);
+        limparBuffer(); //limpa o buffer de entrada após ler o número de tropas
+
+    }
+
+    //laço para imprimir os dados dos territórios
+    printf("\nDados dos territórios:\n");
+    for(int i=0; i<QTDE_TERRITORIOS; i++){
+        printf("Território: %s, Cor: %s, Tropas: %d\n", territorios[i].nome, territorios[i].cor, territorios[i].tropas);
+    }
 
     // 3. Limpeza:
     // - Ao final do jogo, libera a memória alocada para o mapa para evitar vazamentos de memória.
@@ -96,3 +141,8 @@ int main() {
 
 // limparBufferEntrada():
 // Função utilitária para limpar o buffer de entrada do teclado (stdin), evitando problemas com leituras consecutivas de scanf e getchar.
+
+void limparBuffer(){
+    int c;
+    while ((c=getchar()) != '\n' && c != EOF);
+}
